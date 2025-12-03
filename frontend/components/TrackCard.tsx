@@ -1,6 +1,12 @@
 import { motion } from "framer-motion";
+import type { SpotifyTrack } from "@/types";
 
-export default function TrackCard({ track, onClick }: any) {
+interface TrackCardProps {
+  track: SpotifyTrack;
+  onClick: () => void;
+}
+
+export default function TrackCard({ track, onClick }: TrackCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.03 }}
