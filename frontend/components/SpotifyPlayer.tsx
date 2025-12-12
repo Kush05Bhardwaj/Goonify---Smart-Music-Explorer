@@ -149,25 +149,37 @@ export default function SpotifyWebPlayer({ token, onDeviceReady }: SpotifyPlayer
 
   if (!isActive || !currentTrack) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 p-3 sm:p-4">
+      <div className="fixed bottom-0 left-0 right-0 z-50
+        bg-gradient-to-r from-slate-900/95 via-slate-900/98 to-slate-900/95
+        backdrop-blur-xl
+        border-t border-slate-700/50
+        shadow-2xl shadow-black/50
+        p-4 sm:p-5"
+      >
         <div className="max-w-7xl mx-auto text-center text-slate-400 text-xs sm:text-sm">
           {isReady ? (
-            <>
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <p className="text-emerald-400">🎵 Spotify Web Player Ready</p>
+            <div className="animate-fadeIn">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="relative">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0 w-3 h-3 bg-emerald-500 rounded-full animate-ping opacity-50"></div>
+                </div>
+                <p className="text-emerald-400 font-medium text-sm">🎵 Spotify Web Player Ready</p>
               </div>
-              <p className="text-xs mt-1">
-                Device: <span className="font-mono text-emerald-400">Smart Music Explorer</span>
+              <p className="text-xs text-slate-500">
+                Device: <span className="font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded">Smart Music Explorer</span>
               </p>
-              <p className="text-xs mt-1">Click the play button on any track to start listening</p>
-            </>
+              <p className="text-xs mt-2 text-slate-500">Click the play button on any track to start listening</p>
+            </div>
           ) : (
-            <>
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500 mx-auto mb-2"></div>
-              <p>Initializing Spotify Player...</p>
-              <p className="text-xs mt-1">This may take a few seconds</p>
-            </>
+            <div className="flex flex-col items-center">
+              <div className="relative w-10 h-10 mb-3">
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-500/30"></div>
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin"></div>
+              </div>
+              <p className="text-slate-300 font-medium">Initializing Spotify Player...</p>
+              <p className="text-xs mt-1 text-slate-500">This may take a few seconds</p>
+            </div>
           )}
         </div>
       </div>
@@ -175,48 +187,74 @@ export default function SpotifyWebPlayer({ token, onDeviceReady }: SpotifyPlayer
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 p-2 sm:p-4 shadow-2xl">
+    <div className="fixed bottom-0 left-0 right-0 z-50
+      bg-gradient-to-r from-slate-900/95 via-slate-950/98 to-slate-900/95
+      backdrop-blur-xl
+      border-t border-slate-700/50
+      shadow-2xl shadow-black/50
+      p-3 sm:p-4"
+    >
+      {/* Decorative top glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
+      
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
           {/* Album Art & Track Info */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-1 w-full min-w-0">
-            <img
-              src={currentTrack.album.images[0]?.url}
-              alt={currentTrack.name}
-              className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow-lg flex-shrink-0"
-            />
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 w-full min-w-0">
+            <div className="relative group">
+              <img
+                src={currentTrack.album.images[0]?.url}
+                alt={currentTrack.name}
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl shadow-lg shadow-black/30 
+                  transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 rounded-xl bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
             <div className="min-w-0 flex-1">
-              <p className="font-semibold text-xs sm:text-sm truncate">{currentTrack.name}</p>
-              <p className="text-[10px] sm:text-xs text-slate-400 truncate">
+              <p className="font-bold text-sm sm:text-base text-slate-100 truncate">
+                {currentTrack.name}
+              </p>
+              <p className="text-xs sm:text-sm text-slate-400 truncate">
                 {currentTrack.artists.map((a: any) => a.name).join(", ")}
               </p>
             </div>
           </div>
 
           {/* Playback Controls */}
-          <div className="flex flex-col items-center gap-1.5 sm:gap-2 flex-1 w-full">
-            <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-col items-center gap-2 sm:gap-3 flex-1 w-full">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={handlePrevious}
-                className="p-1.5 sm:p-2 hover:bg-slate-800 rounded-full transition"
+                className="p-2 sm:p-2.5 
+                  text-slate-400 hover:text-slate-100
+                  hover:bg-slate-800/80 
+                  rounded-full transition-all duration-200
+                  hover:scale-110 active:scale-95"
                 title="Previous"
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
                 </svg>
               </button>
 
               <button
                 onClick={handlePlayPause}
-                className="p-2 sm:p-3 bg-emerald-500 hover:bg-emerald-400 rounded-full transition"
+                className="p-3 sm:p-4 
+                  bg-gradient-to-br from-emerald-400 to-emerald-600 
+                  hover:from-emerald-300 hover:to-emerald-500
+                  rounded-full 
+                  shadow-lg shadow-emerald-500/30
+                  hover:shadow-xl hover:shadow-emerald-500/40
+                  transition-all duration-200
+                  hover:scale-105 active:scale-95"
                 title={isPaused ? "Play" : "Pause"}
               >
                 {isPaused ? (
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6 4h4v16H6zm8 0h4v16h-4z" />
                   </svg>
                 )}
@@ -224,38 +262,59 @@ export default function SpotifyWebPlayer({ token, onDeviceReady }: SpotifyPlayer
 
               <button
                 onClick={handleNext}
-                className="p-1.5 sm:p-2 hover:bg-slate-800 rounded-full transition"
+                className="p-2 sm:p-2.5 
+                  text-slate-400 hover:text-slate-100
+                  hover:bg-slate-800/80 
+                  rounded-full transition-all duration-200
+                  hover:scale-110 active:scale-95"
                 title="Next"
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
                 </svg>
               </button>
             </div>
 
             {/* Progress Bar */}
-            <div className="flex items-center gap-1.5 sm:gap-2 w-full">
-              <span className="text-[10px] sm:text-xs text-slate-400 w-8 sm:w-10 text-right">
+            <div className="flex items-center gap-2 sm:gap-3 w-full max-w-md">
+              <span className="text-[10px] sm:text-xs text-slate-500 w-10 text-right font-mono">
                 {formatTime(position)}
               </span>
-              <input
-                type="range"
-                min="0"
-                max={duration}
-                value={position}
-                onChange={handleSeek}
-                className="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 sm:[&::-webkit-slider-thumb]:w-3 sm:[&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-500"
-              />
-              <span className="text-[10px] sm:text-xs text-slate-400 w-8 sm:w-10">
+              <div className="flex-1 relative group">
+                <div className="h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-150"
+                    style={{ width: `${(position / duration) * 100}%` }}
+                  />
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={duration}
+                  value={position}
+                  onChange={handleSeek}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                {/* Custom thumb on hover */}
+                <div 
+                  className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-emerald-400 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                  style={{ left: `calc(${(position / duration) * 100}% - 6px)` }}
+                />
+              </div>
+              <span className="text-[10px] sm:text-xs text-slate-500 w-10 font-mono">
                 {formatTime(duration)}
               </span>
             </div>
           </div>
 
           {/* Volume & Extra Controls */}
-          <div className="hidden sm:flex items-center gap-2 flex-1 justify-end">
-            <div className="text-[10px] sm:text-xs text-slate-500">
-              <span className="hidden md:inline">Device: </span><span className="text-emerald-400">Web Player</span>
+          <div className="hidden sm:flex items-center gap-3 flex-1 justify-end">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 rounded-full border border-slate-700/50">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-xs text-slate-400">
+                <span className="hidden lg:inline">Device: </span>
+                <span className="text-emerald-400 font-medium">Web Player</span>
+              </span>
             </div>
           </div>
         </div>

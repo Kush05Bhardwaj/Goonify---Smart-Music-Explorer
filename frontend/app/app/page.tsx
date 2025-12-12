@@ -364,31 +364,58 @@ export default function AppPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex items-center justify-center">
+        {/* Background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+        
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center space-y-4"
+          className="text-center space-y-6 relative z-10"
         >
-          <div className="w-16 h-16 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto"></div>
-          <p className="text-slate-300 text-lg">Loading your music...</p>
+          <div className="relative w-20 h-20 mx-auto">
+            <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
+            <div className="absolute inset-2 rounded-full border-4 border-emerald-400/30 border-b-transparent animate-spin-slow" style={{ animationDirection: 'reverse' }}></div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-slate-200 text-xl font-medium">Loading your music...</p>
+            <p className="text-slate-500 text-sm">Connecting to Spotify</p>
+          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 pb-32">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 pb-40">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl"></div>
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800">
-        <div className="container mx-auto px-4 sm:px-6 py-3">
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-slate-800/50 shadow-lg shadow-black/10">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center text-lg sm:text-xl">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <motion.div 
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-lg shadow-emerald-500/30"
+              >
                 🎵
-              </div>
+              </motion.div>
               <div>
-                <h1 className="text-sm sm:text-lg font-bold text-slate-100">Smart Music Explorer</h1>
-                <p className="text-[10px] sm:text-xs text-slate-400 hidden sm:block">Welcome back, {user?.display_name}</p>
+                <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent">
+                  Smart Music Explorer
+                </h1>
+                <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">
+                  Welcome back, <span className="text-emerald-400">{user?.display_name}</span>
+                </p>
               </div>
             </div>
 
@@ -401,39 +428,39 @@ export default function AppPage() {
                   <img
                     src={user.images?.[0]?.url}
                     alt="Profile"
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-emerald-500/50"
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 border-emerald-500/50 shadow-lg shadow-emerald-500/20 hover:border-emerald-400 transition-colors"
                   />
                 </button>
 
                 <AnimatePresence>
                   {showUserMenu && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50"
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-3 w-72 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden z-50"
                     >
-                      <div className="p-4 border-b border-slate-800">
-                        <p className="font-semibold text-slate-100">{user.display_name}</p>
-                        <p className="text-sm text-slate-400">{user.email}</p>
-                        <div className="mt-2 text-xs">
-                          <span className={`inline-block px-2 py-1 rounded ${
+                      <div className="p-5 border-b border-slate-700/50 bg-gradient-to-r from-emerald-500/10 to-transparent">
+                        <p className="font-bold text-lg text-slate-100">{user.display_name}</p>
+                        <p className="text-sm text-slate-400 mt-0.5">{user.email}</p>
+                        <div className="mt-3">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
                             user.product === 'premium' 
-                              ? 'bg-emerald-500/20 text-emerald-400' 
-                              : 'bg-slate-700 text-slate-400'
+                              ? 'bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 text-emerald-400 border border-emerald-500/30' 
+                              : 'bg-slate-700/50 text-slate-400 border border-slate-600/50'
                           }`}>
-                            {user.product === 'premium' ? '✨ Premium' : 'Free'}
+                            {user.product === 'premium' ? '✨ Premium' : '🎵 Free'}
                           </span>
                         </div>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-3 text-left text-red-400 hover:bg-red-900/20 transition-colors flex items-center gap-2"
+                        className="w-full px-5 py-4 text-left text-red-400 hover:bg-red-500/10 transition-colors flex items-center gap-3 group"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        Logout
+                        <span className="font-medium">Sign Out</span>
                       </button>
                     </motion.div>
                   )}
@@ -445,15 +472,15 @@ export default function AppPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10">
+        <div className="grid lg:grid-cols-3 gap-5 lg:gap-8">
           {/* Left: Tracks List */}
           <div className="lg:col-span-2 space-y-6">
             {/* View Toggle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide"
+              className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide"
             >
               {[
                 { mode: 'top-tracks', icon: '🎵', label: 'Top Tracks', shortLabel: 'Top', color: 'emerald' },
@@ -465,12 +492,12 @@ export default function AppPage() {
                 <motion.button
                   key={mode}
                   onClick={() => setViewMode(mode as ViewMode)}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
                     viewMode === mode
-                      ? `bg-${color}-500 text-white shadow-lg shadow-${color}-500/30`
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      ? `bg-gradient-to-r from-${color}-500 to-${color}-600 text-white shadow-lg shadow-${color}-500/30 border border-${color}-400/30`
+                      : 'bg-slate-800/70 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50 hover:border-slate-600/50'
                   }`}
                 >
                   <span className="hidden sm:inline">{icon} {label}</span>
@@ -484,23 +511,28 @@ export default function AppPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative"
+                className="relative group"
               >
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for songs, artists, albums..."
-                  className="w-full px-4 py-3 pl-12 bg-slate-900/50 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-pink-500 transition-colors"
-                />
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                {searching && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <div className="w-5 h-5 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                )}
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search for songs, artists, albums..."
+                    className="w-full px-5 py-4 pl-14 bg-slate-800/60 border border-slate-700/50 rounded-xl text-slate-100 placeholder-slate-500 
+                      focus:outline-none focus:border-pink-500/50 focus:bg-slate-800/80
+                      transition-all duration-300 text-sm sm:text-base"
+                  />
+                  <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  {searching && (
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2">
+                      <div className="w-5 h-5 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
               </motion.div>
             )}
 
@@ -509,28 +541,35 @@ export default function AppPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="grid grid-cols-2 sm:grid-cols-3 gap-3"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-4"
               >
-                {playlists.map((playlist) => (
+                {playlists.map((playlist, idx) => (
                   <motion.button
                     key={playlist.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
                     onClick={() => {
                       setSelectedPlaylist(playlist);
                       loadPlaylist(playlist.id);
                     }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`p-3 rounded-xl text-left transition-all ${
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`group p-3 rounded-xl text-left transition-all ${
                       selectedPlaylist?.id === playlist.id
-                        ? 'bg-blue-500/20 border-2 border-blue-500'
-                        : 'bg-slate-900/50 border border-slate-800 hover:border-slate-700'
+                        ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-2 border-blue-500/50 shadow-lg shadow-blue-500/20'
+                        : 'bg-slate-800/50 border border-slate-700/50 hover:border-slate-600/50 hover:bg-slate-800/80'
                     }`}
                   >
-                    <div className="aspect-square rounded-lg overflow-hidden mb-2">
-                      <img src={playlist.images?.[0]?.url || '/placeholder.png'} alt={playlist.name} className="w-full h-full object-cover" />
+                    <div className="aspect-square rounded-lg overflow-hidden mb-3 shadow-lg">
+                      <img 
+                        src={playlist.images?.[0]?.url || '/placeholder.png'} 
+                        alt={playlist.name} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                      />
                     </div>
-                    <p className="text-sm font-medium text-slate-100 truncate">{playlist.name}</p>
-                    <p className="text-xs text-slate-500">{playlist.tracks.total} tracks</p>
+                    <p className="text-sm font-semibold text-slate-100 truncate group-hover:text-blue-300 transition-colors">{playlist.name}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{playlist.tracks.total} tracks</p>
                   </motion.button>
                 ))}
               </motion.div>
@@ -541,28 +580,30 @@ export default function AppPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 overflow-x-auto pb-2"
+                className="flex flex-wrap items-center gap-3 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30"
               >
-                <span className="text-sm text-slate-400 whitespace-nowrap">Time Range:</span>
-                {[
-                  { value: 'short_term', label: 'Last Month' },
-                  { value: 'medium_term', label: 'Last 6 Months' },
-                  { value: 'long_term', label: 'All Time' }
-                ].map((range) => (
-                  <motion.button
-                    key={range.value}
-                    onClick={() => setTimeRange(range.value as any)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                      timeRange === range.value
-                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                    }`}
-                  >
-                    {range.label}
-                  </motion.button>
-                ))}
+                <span className="text-sm text-slate-400 font-medium">📅 Time Range:</span>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'short_term', label: 'Last Month', icon: '📆' },
+                    { value: 'medium_term', label: 'Last 6 Months', icon: '📊' },
+                    { value: 'long_term', label: 'All Time', icon: '🏆' }
+                  ].map((range) => (
+                    <motion.button
+                      key={range.value}
+                      onClick={() => setTimeRange(range.value as any)}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                        timeRange === range.value
+                          ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/30'
+                          : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50'
+                      }`}
+                    >
+                      <span className="hidden sm:inline">{range.icon} </span>{range.label}
+                    </motion.button>
+                  ))}
+                </div>
               </motion.div>
             )}
 
@@ -575,23 +616,25 @@ export default function AppPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="col-span-2 text-center py-20"
+                  className="col-span-2 text-center py-24"
                 >
-                  <div className="text-6xl mb-4">🔍</div>
-                  <p className="text-slate-400">No results found for "{searchQuery}"</p>
+                  <div className="text-7xl mb-6">🔍</div>
+                  <p className="text-xl text-slate-300 font-medium mb-2">No results found</p>
+                  <p className="text-slate-500">Try searching for &quot;{searchQuery}&quot; with different keywords</p>
                 </motion.div>
               ) : viewMode === 'search' && !searchQuery ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="col-span-2 text-center py-20"
+                  className="col-span-2 text-center py-24"
                 >
-                  <div className="text-6xl mb-4">🎵</div>
-                  <p className="text-slate-400">Start typing to search for songs</p>
+                  <div className="text-7xl mb-6 animate-float">🎵</div>
+                  <p className="text-xl text-slate-300 font-medium mb-2">Search for music</p>
+                  <p className="text-slate-500">Start typing to find songs, artists, and albums</p>
                 </motion.div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {(viewMode === 'search' ? searchResults : viewMode === 'recommendations' ? recommendations : tracks).map((track, i) => (
                 <motion.div
                   key={track.id}
@@ -599,23 +642,26 @@ export default function AppPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: i * 0.03, duration: 0.3 }}
-                  whileHover={{ scale: 1.01, y: -2 }}
-                  className={`group relative bg-slate-900/50 backdrop-blur-sm rounded-xl border transition-all duration-300 cursor-pointer ${
+                  whileHover={{ scale: 1.02, y: -3 }}
+                  className={`group relative bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-sm rounded-xl border transition-all duration-300 cursor-pointer overflow-hidden ${
                     selected?.id === track.id
-                      ? 'border-emerald-500 shadow-lg shadow-emerald-500/20'
-                      : 'border-slate-800 hover:border-slate-700'
+                      ? 'border-emerald-500/60 shadow-xl shadow-emerald-500/20 ring-1 ring-emerald-500/30'
+                      : 'border-slate-700/50 hover:border-slate-600/60 hover:shadow-lg hover:shadow-black/20'
                   }`}
                   onClick={() => selectTrack(track)}
                 >
-                  <div className="p-3">
-                    <div className="flex gap-3">
+                  {/* Hover gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  <div className="relative p-4">
+                    <div className="flex gap-4">
                       {/* Album Art */}
                       <div className="relative flex-shrink-0">
                         <motion.img
                           src={track.album.images?.[1]?.url || track.album.images?.[0]?.url}
                           alt={track.name}
-                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg"
-                          whileHover={{ scale: 1.1 }}
+                          className="w-18 h-18 sm:w-20 sm:h-20 rounded-xl shadow-lg object-cover"
+                          whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.2 }}
                         />
                         <motion.button
@@ -626,34 +672,31 @@ export default function AppPage() {
                           disabled={playingTrackUri === track.uri}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                          className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center"
                         >
                           {playingTrackUri === track.uri ? (
                             <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
                           ) : (
-                            <motion.svg 
-                              className="w-8 h-8 text-white" 
-                              fill="currentColor" 
-                              viewBox="0 0 24 24"
-                              whileHover={{ scale: 1.2 }}
-                            >
-                              <path d="M8 5v14l11-7z" />
-                            </motion.svg>
+                            <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                              <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
                           )}
                         </motion.button>
                       </div>
 
                       {/* Track Info */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-sm sm:text-base text-slate-100 truncate mb-1">
+                      <div className="flex-1 min-w-0 py-1">
+                        <h3 className="font-bold text-sm sm:text-base text-slate-100 truncate mb-1.5 group-hover:text-emerald-300 transition-colors">
                           {track.name}
                         </h3>
-                        <p className="text-xs sm:text-sm text-slate-400 truncate mb-1.5">
+                        <p className="text-xs sm:text-sm text-slate-400 truncate mb-2">
                           {track.artists.map(a => a.name).join(', ')}
                         </p>
-                        <div className="flex items-center gap-2 text-[10px] sm:text-xs text-slate-500">
-                          <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-slate-800 rounded truncate max-w-[150px]">
-                            {track.album.name}
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] sm:text-xs text-slate-500 px-2 py-1 bg-slate-800/80 rounded-md truncate max-w-[180px] border border-slate-700/30">
+                            💿 {track.album.name}
                           </span>
                         </div>
                       </div>
@@ -667,47 +710,59 @@ export default function AppPage() {
           </div>
 
           {/* Right: Track Details Sidebar */}
-          <div className="lg:sticky lg:top-24 h-fit">
+          <div className="lg:sticky lg:top-28 h-fit">
             <AnimatePresence mode="wait">
               {selected ? (
                 <motion.div
                   key={selected.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden"
+                  initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                  className="bg-gradient-to-br from-slate-800/70 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-black/30"
                 >
                   {/* Album Art Header */}
-                  <div className="relative h-64">
+                  <div className="relative h-72 group">
                     <img
                       src={selected.album.images?.[0]?.url}
                       alt={selected.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
-                    <button
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+                    <motion.button
                       onClick={() => setSelected(null)}
-                      className="absolute top-4 right-4 w-8 h-8 bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors"
+                      whileHover={{ scale: 1.1, rotate: 90 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="absolute top-4 right-4 w-10 h-10 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center transition-colors border border-white/10"
                     >
-                      ✕
-                    </button>
+                      <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </motion.button>
+                    
+                    {/* Track info overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">{selected.name}</h2>
+                      <p className="text-slate-300 text-sm">{selected.artists.map(a => a.name).join(', ')}</p>
+                    </div>
                   </div>
 
                   <div className="p-6 space-y-6">
-                    {/* Track Info */}
-                    <div>
-                      <h2 className="text-2xl font-bold text-slate-100 mb-2">{selected.name}</h2>
-                      <p className="text-slate-400">{selected.artists.map(a => a.name).join(', ')}</p>
-                      <p className="text-sm text-slate-500 mt-1">{selected.album.name}</p>
+                    {/* Album Info */}
+                    <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-xl border border-slate-700/30">
+                      <span className="text-2xl">💿</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">Album</p>
+                        <p className="text-sm text-slate-200 truncate">{selected.album.name}</p>
+                      </div>
                     </div>
 
                     {/* Play Button */}
                     <motion.button
                       onClick={() => playTrack(selected.uri)}
                       disabled={playingTrackUri === selected.uri}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 rounded-lg font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/30"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40"
                     >
                       {playingTrackUri === selected.uri ? (
                         <>
@@ -716,56 +771,52 @@ export default function AppPage() {
                         </>
                       ) : (
                         <>
-                          <motion.svg 
-                            className="w-5 h-5" 
-                            fill="currentColor" 
-                            viewBox="0 0 24 24"
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ repeat: Infinity, duration: 2 }}
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </motion.svg>
+                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                            <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
                           Play Now
                         </>
                       )}
                     </motion.button>
 
                     {/* Tabs */}
-                    <div className="flex gap-2 border-b border-slate-800 relative">
+                    <div className="flex gap-2 border-b border-slate-700/50 relative">
                       <motion.button
                         onClick={() => setShowLyrics(false)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`px-4 py-3 text-sm font-semibold transition-colors relative ${
                           !showLyrics
                             ? 'text-emerald-400'
                             : 'text-slate-400 hover:text-slate-300'
                         }`}
                       >
-                        Similar Tracks
+                        🎵 Similar Tracks
                         {!showLyrics && (
                           <motion.div
                             layoutId="activeTab"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-400"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-500"
                             transition={{ type: "spring", stiffness: 500, damping: 30 }}
                           />
                         )}
                       </motion.button>
                       <motion.button
                         onClick={() => setShowLyrics(true)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`px-4 py-3 text-sm font-semibold transition-colors relative ${
                           showLyrics
-                            ? 'text-emerald-400'
+                            ? 'text-purple-400'
                             : 'text-slate-400 hover:text-slate-300'
                         }`}
                       >
-                        Lyrics
+                        📝 Lyrics
                         {showLyrics && (
                           <motion.div
                             layoutId="activeTab"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-400"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-400 to-purple-500"
                             transition={{ type: "spring", stiffness: 500, damping: 30 }}
                           />
                         )}
@@ -773,7 +824,7 @@ export default function AppPage() {
                     </div>
 
                     {/* Content */}
-                    <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                    <div className="max-h-96 overflow-y-auto scrollbar-hide">
                       <AnimatePresence mode="wait">
                         {!showLyrics ? (
                           <motion.div
@@ -781,7 +832,7 @@ export default function AppPage() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 20 }}
-                            className="space-y-2"
+                            className="space-y-3"
                           >
                             {similarTracks.length > 0 ? (
                               similarTracks.map((track: any, i: number) => (
@@ -791,18 +842,33 @@ export default function AppPage() {
                                   animate={{ opacity: 1, x: 0 }}
                                   transition={{ delay: i * 0.05 }}
                                   whileHover={{ scale: 1.02, x: 4 }}
-                                  className="p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                                  className="group p-3.5 bg-slate-800/40 hover:bg-slate-800/60 rounded-xl transition-all cursor-pointer border border-slate-700/30 hover:border-emerald-500/30"
                                 >
-                                  <p className="text-sm font-medium text-slate-200">{track.name}</p>
-                                  <p className="text-xs text-slate-500">{track.artist?.name}</p>
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/30 transition-colors">
+                                      🎵
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold text-slate-200 truncate group-hover:text-emerald-300 transition-colors">{track.name}</p>
+                                      <p className="text-xs text-slate-500 truncate">{track.artist?.name}</p>
+                                    </div>
+                                    <svg className="w-4 h-4 text-slate-600 group-hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  </div>
                                 </motion.div>
                               ))
                             ) : (
-                              <div className="space-y-2">
+                              <div className="space-y-3">
                                 {[1, 2, 3].map((i) => (
-                                  <div key={i} className="p-3 bg-slate-800/30 rounded-lg animate-shimmer">
-                                    <div className="h-4 bg-slate-700/50 rounded w-3/4 mb-2"></div>
-                                    <div className="h-3 bg-slate-700/30 rounded w-1/2"></div>
+                                  <div key={i} className="p-4 bg-slate-800/30 rounded-xl animate-shimmer border border-slate-700/20">
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-10 h-10 bg-slate-700/50 rounded-lg"></div>
+                                      <div className="flex-1">
+                                        <div className="h-4 bg-slate-700/50 rounded w-3/4 mb-2"></div>
+                                        <div className="h-3 bg-slate-700/30 rounded w-1/2"></div>
+                                      </div>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
@@ -814,16 +880,18 @@ export default function AppPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="prose prose-invert prose-sm max-w-none"
+                            className="relative"
                           >
                             {lyrics ? (
-                              <pre className="text-xs leading-relaxed text-slate-300 whitespace-pre-wrap font-sans">
-                                {lyrics}
-                              </pre>
+                              <div className="p-4 bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl border border-slate-700/30">
+                                <pre className="text-sm leading-relaxed text-slate-300 whitespace-pre-wrap font-sans">
+                                  {lyrics}
+                                </pre>
+                              </div>
                             ) : (
-                              <div className="space-y-2">
+                              <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-700/20 space-y-3">
                                 {[1, 2, 3, 4, 5].map((i) => (
-                                  <div key={i} className="h-3 bg-slate-700/30 rounded animate-shimmer" style={{ width: `${Math.random() * 40 + 60}%` }}></div>
+                                  <div key={i} className="h-4 bg-slate-700/30 rounded animate-shimmer" style={{ width: `${Math.random() * 40 + 60}%` }}></div>
                                 ))}
                               </div>
                             )}
@@ -835,12 +903,13 @@ export default function AppPage() {
                 </motion.div>
               ) : (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-12 text-center"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-gradient-to-br from-slate-800/50 to-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-12 text-center"
                 >
-                  <div className="text-6xl mb-4">🎵</div>
-                  <p className="text-slate-400">Select a track to see details</p>
+                  <div className="text-7xl mb-5 animate-float">🎵</div>
+                  <p className="text-lg text-slate-300 font-medium mb-2">No track selected</p>
+                  <p className="text-sm text-slate-500">Click on any track to view details, lyrics, and similar songs</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -852,35 +921,23 @@ export default function AppPage() {
       <AnimatePresence>
         {error && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed top-20 right-6 bg-red-900/90 backdrop-blur-sm border border-red-700 text-white px-4 py-3 rounded-xl shadow-2xl max-w-md z-50"
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            className="fixed top-24 right-6 bg-gradient-to-r from-red-900/95 to-red-800/95 backdrop-blur-xl border border-red-600/50 text-white px-5 py-4 rounded-xl shadow-2xl shadow-red-900/30 max-w-md z-50"
           >
-            <p className="text-sm">{error}</p>
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-red-500/30 rounded-full flex items-center justify-center flex-shrink-0">
+                ⚠️
+              </div>
+              <p className="text-sm font-medium">{error}</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Spotify Web Player */}
       {token && <SpotifyPlayer token={token} onDeviceReady={handleDeviceReady} />}
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgb(30 41 59 / 0.5);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgb(100 116 139);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgb(148 163 184);
-        }
-      `}</style>
     </div>
   );
 }

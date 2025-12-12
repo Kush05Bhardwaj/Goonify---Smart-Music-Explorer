@@ -1,30 +1,80 @@
 # 🎵 Smart Music Explorer
 
-**A next-generation AI-powered music discovery platform with a premium, futuristic UI**
+> **A next-generation AI-powered music discovery platform with a premium, futuristic UI**
 
-A full-stack web application featuring **glassmorphism design**, **neon gradients**, and **cinematic animations** that integrates with Spotify, Last.fm, and Genius APIs to provide music insights, lyrics, and recommendations.
+A full-stack web application featuring **glassmorphism design**, **gradient overlays**, and **smooth animations** that integrates with Spotify, Last.fm, and Genius APIs to provide music insights, lyrics, and recommendations.
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
+![Next.js](https://img.shields.io/badge/Next.js-16.0-black.svg)
+
+---
+
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#️-architecture)
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Development](#-development)
+- [Deployment](#-deployment)
+- [API Documentation](#-api-documentation)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
 
 ## ✨ Features
 
 ### 🎨 Premium UI/UX
-- **Glassmorphism** elements with soft blur effects
-- **Neon gradient backgrounds** (deep navy → teal → purple)
-- **Glowing accents** and ambient lighting effects
-- **Neumorphic cards** with 3D depth
-- **Floating particles** and animated mesh backgrounds
-- **Smooth micro-animations** and transitions
-- **Premium fonts** (Inter/Poppins)
-- **Apple-style minimal controls**
+- **Glassmorphism Effects** - Frosted glass elements with backdrop blur
+- **Gradient Overlays** - Emerald to slate color scheme
+- **Smooth Animations** - Framer Motion powered transitions
+- **Responsive Design** - Mobile-first approach with Tailwind CSS
+- **Custom Scrollbars** - Styled with hover effects
+- **Interactive Cards** - 3D transforms and hover states
+- **Loading States** - Skeleton loaders and shimmer effects
+- **Modern Typography** - Clean and readable font hierarchy
 
 ### 🎧 Core Features
-- 🎵 **Web Playback**: Play music directly in your browser with premium player controls
-- 🔥 **Top Tracks & Analytics**: View your listening habits with beautiful visualizations
-- 🎼 **Song Lyrics**: Real-time lyrics from Genius
-- 🎶 **AI-Powered Discovery**: Find similar tracks via Last.fm
-- 📊 **Music Analytics**: Detailed insights with charts and graphs
-- 🔍 **Smart Search**: Real-time search with debouncing
-- 📁 **Playlist Management**: Browse and play your playlists
-- 🔒 **Secure**: OAuth 2.0, HTTP-only cookies, CORS protection
+- 🎵 **Spotify Web Playback** - Play music directly in your browser with full player controls
+- 🔥 **Top Tracks & Artists** - View your listening habits across different time ranges
+- 🎼 **Synchronized Lyrics** - Real-time lyrics from Genius API
+- 🎶 **Similar Music Discovery** - AI-powered recommendations via Last.fm
+- 📊 **Music Analytics** - Detailed insights with interactive charts (Recharts)
+- 🔍 **Smart Search** - Real-time search with debouncing
+- 📁 **Playlist Management** - Browse and play your Spotify playlists
+- ⏱️ **Time Range Selection** - Last month, 6 months, or all-time stats
+- 🔒 **Secure Authentication** - OAuth 2.0, HTTP-only cookies, CORS protection
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Charts**: Recharts
+- **HTTP Client**: Fetch API
+
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **APIs**: Spotify Web API, Last.fm, Genius
+- **Security**: Helmet, CORS, cookie-parser
+- **Environment**: dotenv
+
+### External APIs
+- **Spotify API** - Music streaming and user data
+- **Last.fm API** - Similar track recommendations
+- **Genius API** - Song lyrics and metadata
+
+---
 
 ## 🏗️ Architecture
 
@@ -32,36 +82,196 @@ A full-stack web application featuring **glassmorphism design**, **neon gradient
 ```
 backend/
 ├── src/
-│   ├── config/          # Environment validation & config
+│   ├── config/          # Environment validation & Spotify config
 │   ├── middleware/      # Auth, error handling, logging
 │   ├── routes/          # API route handlers
-│   │   ├── auth.js      # Spotify OAuth routes
+│   │   ├── auth.js      # Spotify OAuth flow
 │   │   ├── spotify.js   # Spotify API endpoints
-│   │   └── music.js     # Last.fm & Genius endpoints
+│   │   ├── music.js     # Last.fm & Genius endpoints
+│   │   ├── playback.js  # Playback control
+│   │   └── token.js     # Token management
 │   ├── services/        # External API integrations
 │   │   ├── genius.js    # Genius lyrics service
-│   │   └── lastfm.js    # Last.fm service
+│   │   └── lastfm.js    # Last.fm recommendations
 │   └── index.js         # Main server file
 ├── package.json
 └── .env
 ```
 
-### Frontend (Next.js 15 + TypeScript)
+### Frontend (Next.js 16 + TypeScript)
 ```
 frontend/
 ├── app/
+│   ├── app/
+│   │   └── page.tsx     # Main dashboard
+│   ├── layout.tsx       # Root layout
 │   ├── page.tsx         # Landing page
-│   └── app/
-│       └── page.tsx     # Main app page
+│   └── globals.css      # Global styles & animations
 ├── components/
-│   ├── TrackCard.tsx    # Track display component
-│   └── TrackDetails.tsx # Track details sidebar
+│   ├── SpotifyPlayer.tsx    # Web playback SDK
+│   ├── TrackCard.tsx        # Track list item
+│   └── TrackDetails.tsx     # Sidebar details
+├── hooks/
+│   └── useSpotifyToken.ts   # Token management
 ├── lib/
-│   └── api.ts           # API client & configuration
+│   └── api.ts               # API client
 ├── types/
-│   └── index.ts         # TypeScript type definitions
+│   └── index.ts             # TypeScript types
+├── package.json
 └── .env.local
 ```
+---
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** >= 18.0.0 ([Download](https://nodejs.org/))
+- **npm** >= 9.0.0 (comes with Node.js)
+- **Git** ([Download](https://git-scm.com/))
+- **Spotify Premium Account** (required for Web Playback)
+
+### Required API Keys
+
+You'll need to create accounts and get API keys from:
+
+1. **Spotify Developer Account** - [Create App](https://developer.spotify.com/dashboard)
+2. **Last.fm API** - [Get API Key](https://www.last.fm/api/account/create)
+3. **Genius API** - [Get Access Token](https://genius.com/api-clients)
+
+---
+
+## 🚀 Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/smart-music-explorer.git
+cd smart-music-explorer
+```
+
+### 2. Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file in the `backend` directory:
+
+```env
+PORT=4000
+
+# Spotify OAuth Configuration
+SPOTIFY_CLIENT_ID=your_spotify_client_id_here
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:4000/api/auth/callback
+
+# External APIs
+LASTFM_API_KEY=your_lastfm_api_key_here
+GENIUS_ACCESS_TOKEN=your_genius_access_token_here
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://127.0.0.1:3000
+```
+
+### 3. Frontend Setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+Create a `.env.local` file in the `frontend` directory:
+
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:4000
+```
+
+---
+
+## 🔑 Environment Variables
+
+### Backend Environment Variables
+
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `PORT` | Backend server port | `4000` | No (default: 4000) |
+| `SPOTIFY_CLIENT_ID` | Spotify app client ID | `abc123...` | **Yes** |
+| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret | `def456...` | **Yes** |
+| `SPOTIFY_REDIRECT_URI` | OAuth callback URL | `http://127.0.0.1:4000/api/auth/callback` | **Yes** |
+| `LASTFM_API_KEY` | Last.fm API key | `xyz789...` | **Yes** |
+| `GENIUS_ACCESS_TOKEN` | Genius API access token | `token123...` | **Yes** |
+| `FRONTEND_URL` | Frontend URL for CORS | `http://127.0.0.1:3000` | **Yes** |
+
+### Frontend Environment Variables
+
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://127.0.0.1:4000` | **Yes** |
+
+---
+
+## 🎯 Getting API Keys
+
+### 1. Spotify API Setup
+
+1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Click **"Create App"**
+3. Fill in:
+   - **App Name**: Smart Music Explorer
+   - **App Description**: Music discovery platform
+   - **Redirect URI**: `http://127.0.0.1:4000/api/auth/callback`
+   - **APIs Used**: Web API, Web Playback SDK
+4. Copy your **Client ID** and **Client Secret**
+5. Add redirect URI in app settings
+
+### 2. Last.fm API Setup
+
+1. Go to [Last.fm API Account](https://www.last.fm/api/account/create)
+2. Fill in application details
+3. Copy your **API Key**
+
+### 3. Genius API Setup
+
+1. Go to [Genius API Clients](https://genius.com/api-clients)
+2. Click **"New API Client"**
+3. Fill in:
+   - **App Name**: Smart Music Explorer
+   - **App Website URL**: `http://127.0.0.1:3000`
+4. Generate a **Client Access Token**
+5. Copy the token
+
+---
+
+## 💻 Development
+
+### Start Backend Server
+
+```bash
+cd backend
+npm run dev
+```
+
+The backend will start on `http://127.0.0.1:4000`
+
+### Start Frontend Development Server
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will start on `http://127.0.0.1:3000` (or next available port)
+
+### Access the Application
+
+1. Open your browser and navigate to `http://127.0.0.1:3000`
+2. Click **"Connect with Spotify"**
+3. Log in with your Spotify account
+4. Start exploring your music!
+
+---
 
 ## 📡 API Endpoints
 
@@ -97,37 +307,261 @@ frontend/
 - `GET /api/health` - Health check endpoint
 - `GET /` - API documentation
 
-## 🚀 Setup & Installation
+---
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Spotify Developer Account
-- Last.fm API Key
-- Genius API Token
+## 🚀 Deployment
 
-### Environment Variables
+### Option 1: Deploy to Vercel (Frontend) + Render (Backend)
 
-**Backend** (`backend/.env`):
-```env
-PORT=4000
+#### Backend Deployment (Render)
 
-# Spotify OAuth
-SPOTIFY_CLIENT_ID=your_spotify_client_id
-SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-SPOTIFY_REDIRECT_URI=http://127.0.0.1:4000/api/auth/callback
+1. **Create Render Account** at [render.com](https://render.com)
 
-# External APIs
-LASTFM_API_KEY=your_lastfm_api_key
-GENIUS_ACCESS_TOKEN=your_genius_token
+2. **Create New Web Service**
+   - Connect your GitHub repository
+   - Select the `backend` folder
+   - Configure:
+     - **Name**: smart-music-explorer-api
+     - **Environment**: Node
+     - **Build Command**: `npm install`
+     - **Start Command**: `npm start`
+     - **Instance Type**: Free (or paid for better performance)
 
-# Frontend URL
-FRONTEND_URL=http://127.0.0.1:3000
+3. **Add Environment Variables** in Render dashboard:
+   ```env
+   PORT=4000
+   SPOTIFY_CLIENT_ID=your_client_id
+   SPOTIFY_CLIENT_SECRET=your_client_secret
+   SPOTIFY_REDIRECT_URI=https://your-backend-url.onrender.com/api/auth/callback
+   LASTFM_API_KEY=your_api_key
+   GENIUS_ACCESS_TOKEN=your_token
+   FRONTEND_URL=https://your-app.vercel.app
+   ```
+
+4. **Update Spotify App Settings**
+   - Add production redirect URI: `https://your-backend-url.onrender.com/api/auth/callback`
+
+#### Frontend Deployment (Vercel)
+
+1. **Create Vercel Account** at [vercel.com](https://vercel.com)
+
+2. **Import Project**
+   - Connect your GitHub repository
+   - Set **Root Directory**: `frontend`
+   - Framework Preset: Next.js
+
+3. **Add Environment Variable**:
+   ```env
+   NEXT_PUBLIC_API_URL=https://your-backend-url.onrender.com
+   ```
+
+4. **Deploy!** 🎉
+
+### Option 2: Deploy to Railway
+
+1. **Create Railway Account** at [railway.app](https://railway.app)
+
+2. **Deploy Backend**
+   - New Project → Deploy from GitHub
+   - Select backend directory
+   - Add environment variables (same as above)
+   - Railway will auto-deploy on push
+
+3. **Deploy Frontend**
+   - Add new service to same project
+   - Select frontend directory
+   - Add `NEXT_PUBLIC_API_URL` variable
+   - Configure build command: `npm run build`
+   - Start command: `npm start`
+
+### Option 3: Deploy to Your Own VPS
+
+#### Backend Setup
+
+```bash
+# SSH into your server
+ssh user@your-server-ip
+
+# Clone repository
+git clone https://github.com/yourusername/smart-music-explorer.git
+cd smart-music-explorer/backend
+
+# Install dependencies
+npm install
+
+# Create .env file with production values
+nano .env
+
+# Install PM2 for process management
+npm install -g pm2
+
+# Start backend with PM2
+pm2 start src/index.js --name music-explorer-api
+pm2 save
+pm2 startup
 ```
 
-**Frontend** (`frontend/.env.local`):
+#### Frontend Setup
+
+```bash
+cd ../frontend
+
+# Install dependencies
+npm install
+
+# Create .env.local
+nano .env.local
+
+# Build for production
+npm run build
+
+# Start with PM2
+pm2 start npm --name music-explorer-web -- start
+pm2 save
+```
+
+#### Nginx Configuration
+
+```nginx
+# Backend API
+server {
+    listen 80;
+    server_name api.yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:4000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+# Frontend
+server {
+    listen 80;
+    server_name yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+### Important Deployment Notes
+
+⚠️ **Before deploying:**
+
+1. **Update CORS Origins** in `backend/src/config/index.js`:
+   ```javascript
+   CORS_ORIGINS: [
+     'http://localhost:3000',
+     'http://127.0.0.1:3000',
+     'https://your-production-domain.com'  // Add this
+   ]
+   ```
+
+2. **Update Spotify App Settings**:
+   - Add production redirect URI
+   - Add production website URL
+
+3. **Enable HTTPS**:
+   - Use Let's Encrypt with Certbot
+   - Or use platform's built-in SSL (Vercel/Render)
+
+4. **Environment Variables**:
+   - Never commit `.env` files
+   - Use platform's environment variable settings
+   - Update all URLs to production values
+
+---
+
+## 🔧 Environment Variables Reference
+
+### Production Backend (.env)
+
 ```env
-NEXT_PUBLIC_API_URL=http://127.0.0.1:4000
+# Server Configuration
+PORT=4000
+NODE_ENV=production
+
+# Spotify OAuth
+SPOTIFY_CLIENT_ID=your_production_client_id
+SPOTIFY_CLIENT_SECRET=your_production_client_secret
+SPOTIFY_REDIRECT_URI=https://api.yourdomain.com/api/auth/callback
+
+# External APIs
+LASTFM_API_KEY=your_lastfm_key
+GENIUS_ACCESS_TOKEN=your_genius_token
+
+# Frontend URL (for CORS)
+FRONTEND_URL=https://yourdomain.com
+```
+
+### Production Frontend (.env.local)
+
+```env
+# Backend API URL
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. "Unable to acquire lock" Error
+```bash
+# Kill existing Next.js processes
+pkill -f next
+# Or on Windows
+taskkill /F /IM node.exe
+```
+
+#### 2. Port Already in Use
+```bash
+# Find process using port 4000
+lsof -i :4000  # Mac/Linux
+netstat -ano | findstr :4000  # Windows
+
+# Kill the process
+kill -9 <PID>  # Mac/Linux
+taskkill /PID <PID> /F  # Windows
+```
+
+#### 3. Spotify Player Not Loading
+- Ensure you have **Spotify Premium**
+- Check browser console for errors
+- Verify redirect URI matches exactly
+- Clear browser cache and cookies
+
+#### 4. CORS Errors
+- Check `FRONTEND_URL` in backend `.env`
+- Verify `CORS_ORIGINS` in `backend/src/config/index.js`
+- Ensure URLs match exactly (no trailing slashes)
+
+#### 5. Authentication Loop
+- Clear browser cookies
+- Check `SPOTIFY_REDIRECT_URI` matches exactly
+- Verify client ID and secret are correct
+
+### Debug Mode
+
+Enable detailed logging:
+
+```bash
+# Backend
+DEBUG=* npm run dev
+
+# Frontend (check browser console)
+NEXT_PUBLIC_DEBUG=true npm run dev
 ```
 
 ### Installation Steps
@@ -321,14 +755,142 @@ npm run dev
 - Limited to 50 tracks/artists per request (Spotify API limitation)
 - Lyrics might not be found for all songs
 
-## 📄 License
+---
 
-MIT
+## � Performance Optimization
 
-## 🤝 Contributing
+### Backend Optimizations
+- **Request Caching**: Implement Redis for API response caching
+- **Connection Pooling**: Reuse Spotify API connections
+- **Compression**: Enable gzip compression for responses
+- **Rate Limiting**: Implement rate limiting per user
 
-Contributions welcome! Please open an issue or PR.
+### Frontend Optimizations
+- **Code Splitting**: Automatic with Next.js App Router
+- **Image Optimization**: Use Next.js Image component
+- **Lazy Loading**: Defer non-critical components
+- **Memoization**: Use React.memo for expensive components
 
 ---
 
-Built with ❤️ using Next.js, Express, and the Spotify API
+## 📚 Additional Resources
+
+- [Spotify Web API Documentation](https://developer.spotify.com/documentation/web-api)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS v4 Documentation](https://tailwindcss.com/docs)
+- [Framer Motion Documentation](https://www.framer.com/motion/)
+- [Last.fm API Documentation](https://www.last.fm/api)
+- [Genius API Documentation](https://docs.genius.com/)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+### Reporting Bugs
+1. Check existing issues to avoid duplicates
+2. Include detailed steps to reproduce
+3. Provide screenshots/logs if applicable
+4. Specify your environment (OS, browser, Node version)
+
+### Suggesting Features
+1. Open an issue with the `enhancement` label
+2. Describe the feature and its use case
+3. Explain why it would be valuable
+
+### Pull Requests
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow the existing code style
+- Write clear commit messages
+- Update documentation as needed
+- Test your changes thoroughly
+- Keep PRs focused on a single feature/fix
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2025 Smart Music Explorer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## 👥 Authors
+
+**Smart Music Explorer Team**
+- GitHub: [@yourusername](https://github.com/yourusername)
+
+---
+
+## 🙏 Acknowledgments
+
+- **Spotify** - For the amazing Web API and Web Playback SDK
+- **Last.fm** - For music recommendation data
+- **Genius** - For song lyrics and metadata
+- **Vercel** - For Next.js and hosting platform
+- **Tailwind Labs** - For Tailwind CSS
+- **Framer** - For Framer Motion animations
+- **The Open Source Community** - For inspiration and tools
+
+---
+
+## 📞 Support
+
+Need help? Here's how to get support:
+
+- 📧 **Email**: support@smartmusicexplorer.com
+- 💬 **Discord**: [Join our community](https://discord.gg/your-server)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/smart-music-explorer/issues)
+- 📖 **Documentation**: [Wiki](https://github.com/yourusername/smart-music-explorer/wiki)
+
+---
+
+## ⭐ Show Your Support
+
+If you found this project helpful, please consider:
+
+- ⭐ **Starring** the repository
+- 🐛 **Reporting** bugs or issues
+- 💡 **Suggesting** new features
+- 🔀 **Contributing** to the codebase
+- 📢 **Sharing** with others
+
+---
+
+<div align="center">
+
+**Built with ❤️ using Next.js, Express, and the Spotify API**
+
+[⬆ Back to Top](#-smart-music-explorer)
+
+</div>
