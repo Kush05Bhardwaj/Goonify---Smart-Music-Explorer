@@ -306,25 +306,47 @@ export default function AppPage() {
   };
 
   useEffect(() => {
-    Promise.all([
-      apiFetch(API_ENDPOINTS.spotify.me),
-      apiFetch(`${API_ENDPOINTS.spotify.topTracks}?time_range=${timeRange}`),
-      apiFetch('http://127.0.0.1:4000/api/auth/token'),
-      apiFetch(API_ENDPOINTS.spotify.recommendations),
-      apiFetch(API_ENDPOINTS.spotify.playlists)
-    ])
-      .then(([userData, tracksData, tokenData, recsData, playlistsData]) => {
+    const loadData = async () => {
+      try {
+        // Get token first (from localStorage or cookie)
+        const { TokenStorage } = require('@/lib/api');
+        const storedToken = TokenStorage.getAccessToken();
+        
+        // Fetch token from backend if not in localStorage (development mode)
+        let tokenValue = storedToken;
+        if (!tokenValue || TokenStorage.isTokenExpired()) {
+          try {
+            const tokenData = await apiFetch(API_ENDPOINTS.auth.token);
+            tokenValue = tokenData.token;
+          } catch (err) {
+            console.log('No cookie token available');
+          }
+        }
+        
+        if (tokenValue) {
+          setToken(tokenValue);
+        }
+
+        // Load all data in parallel
+        const [userData, tracksData, recsData, playlistsData] = await Promise.all([
+          apiFetch(API_ENDPOINTS.spotify.me),
+          apiFetch(`${API_ENDPOINTS.spotify.topTracks}?time_range=${timeRange}`),
+          apiFetch(API_ENDPOINTS.spotify.recommendations),
+          apiFetch(API_ENDPOINTS.spotify.playlists)
+        ]);
+
         setUser(userData);
         setTracks(tracksData);
-        setToken(tokenData.token);
         setRecommendations(recsData);
         setPlaylists(playlistsData);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err: any) {
         setError(err.message || "Failed to load data");
         setLoading(false);
-      });
+      }
+    };
+
+    loadData();
   }, [timeRange]);
 
   useEffect(() => {
@@ -355,9 +377,16 @@ export default function AppPage() {
       const body: any = { uris: [trackUri] };
       if (deviceId) body.device_id = deviceId;
 
-      const response = await fetch('http://127.0.0.1:4000/api/playback/play', {
+      const { TokenStorage } = require('@/lib/api');
+      const accessToken = TokenStorage.getAccessToken();
+
+      const response = await fetch(API_ENDPOINTS.playback.play, {
         method: 'PUT',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+        },
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
