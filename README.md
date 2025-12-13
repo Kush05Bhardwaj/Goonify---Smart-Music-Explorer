@@ -55,12 +55,13 @@ A full-stack web application featuring **glassmorphism design**, **gradient over
 ## 🛠 Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 16 (App Router)
+- **Framework**: Next.js 15.5.9 (App Router) - *Fixed from 16.0.4 due to CVE-2025-66478*
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
 - **Animations**: Framer Motion
 - **Charts**: Recharts
-- **HTTP Client**: Fetch API
+- **HTTP Client**: Fetch API with Authorization headers
+- **State Management**: React Hooks + localStorage for tokens
 
 ### Backend
 - **Runtime**: Node.js
@@ -311,6 +312,24 @@ The frontend will start on `http://127.0.0.1:3000` (or next available port)
 
 ## 🚀 Deployment
 
+> **📖 For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+### ✅ Recommended: Vercel (Frontend) + Render (Backend)
+
+**This is the tested and working setup for this project.**
+
+**Why this stack?**
+- ✅ Free tier available for both platforms
+- ✅ Automatic deployments from GitHub
+- ✅ Built-in SSL certificates
+- ✅ Great support for monorepos
+- ✅ No credit card required to start
+- ✅ Cross-domain authentication implemented
+
+**Total setup time:** ~10-15 minutes
+
+---
+
 ### Option 1: Deploy to Vercel (Frontend) + Render (Backend)
 
 #### Backend Deployment (Render)
@@ -458,27 +477,64 @@ server {
 
 ⚠️ **Before deploying:**
 
-1. **Update CORS Origins** in `backend/src/config/index.js`:
+1. **Cross-Domain Authentication** (CRITICAL for Vercel/Render setup):
+   - The app uses **token-based authentication** with localStorage for production
+   - Cookies don't work across different domains (Vercel → Render)
+   - Backend automatically detects production and passes tokens via URL
+   - Frontend stores tokens in localStorage and sends via Authorization header
+
+2. **Update CORS Origins** in `backend/src/config/index.js`:
    ```javascript
    CORS_ORIGINS: [
      'http://localhost:3000',
      'http://127.0.0.1:3000',
-     'https://your-production-domain.com'  // Add this
-   ]
+     process.env.FRONTEND_URL  // Automatically includes production URL
+   ].filter(Boolean)
    ```
 
-2. **Update Spotify App Settings**:
-   - Add production redirect URI
+3. **Update Spotify App Settings**:
+   - Add production redirect URI: `https://your-backend.onrender.com/api/auth/callback`
    - Add production website URL
+   - **Important**: Both HTTP and HTTPS URLs may be needed
 
-3. **Enable HTTPS**:
-   - Use Let's Encrypt with Certbot
-   - Or use platform's built-in SSL (Vercel/Render)
+4. **Environment Variables** (REQUIRED):
+   
+   **Backend (Render):**
+   ```env
+   FRONTEND_URL=https://your-app.vercel.app  # NO trailing slash!
+   SPOTIFY_REDIRECT_URI=https://your-backend.onrender.com/api/auth/callback
+   NODE_ENV=production
+   ```
 
-4. **Environment Variables**:
+   **Frontend (Vercel):**
+   ```env
+   NEXT_PUBLIC_API_URL=https://your-backend.onrender.com  # NO trailing slash!
+   ```
+
+5. **Enable HTTPS**:
+   - Vercel/Render provide automatic SSL
+   - For custom domains: Use Let's Encrypt with Certbot
+
+6. **Security**:
    - Never commit `.env` files
    - Use platform's environment variable settings
-   - Update all URLs to production values
+   - Update all URLs to production values (NO localhost!)
+
+### Authentication Flow (Production)
+
+**How it works:**
+1. User clicks "Connect with Spotify"
+2. Redirected to Spotify for authentication
+3. Backend receives auth code and exchanges for tokens
+4. Backend redirects to: `https://your-app.vercel.app/app?access_token=XXX&refresh_token=YYY&expires_in=3600`
+5. Frontend extracts tokens from URL and stores in localStorage
+6. Frontend cleans URL (removes tokens from address bar)
+7. All API calls include `Authorization: Bearer <token>` header
+8. Backend validates token from Authorization header
+
+**Development vs Production:**
+- **Development (localhost)**: Uses HTTP-only cookies
+- **Production (cross-domain)**: Uses localStorage + Authorization headers
 
 ---
 
@@ -754,6 +810,87 @@ npm run dev
 - Access tokens expire after 1 hour (refresh token implementation needed)
 - Limited to 50 tracks/artists per request (Spotify API limitation)
 - Lyrics might not be found for all songs
+- First deployment on Render may take 5-10 minutes (free tier cold start)
+
+---
+
+## 🔍 Troubleshooting
+
+### Issue: "CORS policy: No 'Access-Control-Allow-Origin' header"
+
+**Solution:**
+1. Verify `FRONTEND_URL` is set correctly in Render (NO trailing slash)
+2. Ensure backend has redeployed with latest code
+3. Check `backend/src/config/index.js` includes `process.env.FRONTEND_URL` in CORS_ORIGINS
+4. Make sure URLs match exactly (including https://)
+
+### Issue: "401 Unauthorized" or "Failed to fetch" after login
+
+**Solution:**
+1. **Clear browser data** for your deployment domain
+   - F12 → Application → Storage → Clear site data
+2. Check `NEXT_PUBLIC_API_URL` is set in Vercel (NO trailing slash)
+3. Verify tokens are being stored:
+   - F12 → Application → Local Storage → Check for `spotify_access_token`
+4. Check Network tab for Authorization headers
+5. Ensure backend middleware accepts Bearer tokens
+
+### Issue: "ERR_BLOCKED_BY_CLIENT" errors
+
+**Cause:** Hardcoded localhost URLs in production code
+
+**Solution:**
+- All code now uses `API_ENDPOINTS` from `lib/api.ts`
+- Ensure you've deployed the latest code (check git commit hash)
+- Redeploy both frontend and backend
+
+### Issue: Build fails with "eslint-config-next" errors
+
+**Solution:**
+- The `next.config.ts` already has `ignoreDuringBuilds: true`
+- Install missing dependency: `npm install --save-dev @eslint/eslintrc`
+- Clear build cache and redeploy
+
+### Issue: "Invalid_client" from Spotify
+
+**Solution:**
+1. Verify Client ID and Client Secret in environment variables
+2. Check Spotify redirect URI matches exactly: `https://your-backend.onrender.com/api/auth/callback`
+3. Ensure Spotify app is not in Development Mode (or add your Spotify account to allowed users)
+
+### Issue: Web Player doesn't initialize
+
+**Requirements:**
+- ✅ Spotify Premium account (required for Web Playback SDK)
+- ✅ Token available in localStorage or cookies
+- ✅ Browser supports Web Audio API (Chrome, Firefox, Edge, Safari)
+
+**Debug Steps:**
+1. Check browser console for Spotify SDK errors
+2. Verify token is passed to `<SpotifyPlayer>` component
+3. Check Network tab for `https://sdk.scdn.co/spotify-player.js`
+4. Try different browser or incognito mode
+
+### Issue: Deployment is slow or times out
+
+**Render Free Tier:**
+- First deploy takes 5-10 minutes
+- Service spins down after 15 minutes of inactivity
+- First request after sleep takes ~30 seconds
+
+**Solutions:**
+- Upgrade to Render paid tier ($7/month)
+- Use Railway instead (better free tier)
+- Implement health check pings to keep service alive
+
+### Issue: Environment variables not updating
+
+**Solution:**
+1. Go to platform dashboard (Vercel/Render)
+2. Update environment variables
+3. **Manually trigger redeploy** (changes don't auto-deploy)
+4. Wait for deployment to complete
+5. Clear browser cache before testing
 
 ---
 
@@ -815,40 +952,12 @@ We welcome contributions! Here's how you can help:
 
 ---
 
-## 📄 License
 
-This project is licensed under the **MIT License**.
-
-```
-MIT License
-
-Copyright (c) 2025 Smart Music Explorer
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
----
 
 ## 👥 Authors
 
 **Smart Music Explorer Team**
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@Kush05Bhardwaj](https://github.com/Kush06Bhardwaj)
 
 ---
 
@@ -868,10 +977,7 @@ SOFTWARE.
 
 Need help? Here's how to get support:
 
-- 📧 **Email**: support@smartmusicexplorer.com
-- 💬 **Discord**: [Join our community](https://discord.gg/your-server)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/smart-music-explorer/issues)
-- 📖 **Documentation**: [Wiki](https://github.com/yourusername/smart-music-explorer/wiki)
+- 📧 **Email**: kush2012bhardwaj@gmail.com
 
 ---
 
